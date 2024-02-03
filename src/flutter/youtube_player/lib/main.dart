@@ -45,7 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
     // getApiKey() 함수는 비동기 함수(async)로 선언되어 있습니다. 이는 함수의 실행이 즉시 완료되지 않고, Future 객체를 반환한다는 것을 의미합니다. 따라서 var apiKey = getApiKey();와 같이 코드를 작성하면, apiKey 변수는 Future<String> 타입의 객체를 가지게 됩니다.
     // 비동기 함수의 결과를 사용하려면 await 키워드를 사용해야 합니다. 하지만 await 키워드는 비동기 함수 내에서만 사용할 수 있습니다. 따라서 apiKey를 선언하는 코드를 비동기 함수 내로 옮겨야 합니다.
     var apiKey = await getApiKey();
-    print('api key: $apiKey');
+    // print('api key: $apiKey');
     var url = Uri.parse(
         'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${_controller.text}&type=video&key=$apiKey');
     var response = await http.get(url);
@@ -76,20 +76,41 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           Expanded(
             child: ListView.builder(
+              scrollDirection: Axis.horizontal,
               itemCount: _items.length,
               itemBuilder: (context, index) {
-                var videoId = _items[index]['id']['videoId'];
-                var title = _items[index]['snippet']['title'];
-                var thumbnailUrl =
-                    _items[index]['snippet']['thumbnails']['default']['url'];
-
-                return ListTile(
-                  leading: Image.network(thumbnailUrl),
-                  title: Text(title),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VideoPlayerScreen(videoId: videoId),
+                var item = _items[index];
+                String videoId = item['id']['videoId'];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              VideoPlayerScreen(videoId: videoId)),
+                    );
+                  },
+                  child: Card(
+                    color: Colors.blue, // 카드의 색상을 설정합니다.
+                    child: SizedBox(
+                      width: 200.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 200.0,
+                              height: 200.0,
+                              child: Image.network(
+                                  item['snippet']['thumbnails']['high']['url']),
+                            ),
+                            Text(
+                              item['snippet']['title'],
+                              overflow: TextOverflow.ellipsis, // 긴 텍스트를 처리합니다.
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );
