@@ -1,11 +1,13 @@
 from flask import Flask, request
 from googleapiclient.discovery import build
-import json
+import json, os
 
 app = Flask(__name__)
 
+youtube_api_key = os.getenv('YOUTUBE_API_KEY')
+
 def youtube_search(keyword):
-    youtube = build('youtube', 'v3', developerKey='AIzaSyAPCRTi_VeV5pb5uJcRa6p6MfXJ6NkjysM')
+    youtube = build('youtube', 'v3', developerKey=youtube_api_key)
 
     request = youtube.search().list(
         part='snippet',
