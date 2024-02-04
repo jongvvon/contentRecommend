@@ -74,49 +74,57 @@ class _SearchScreenState extends State<SearchScreen> {
               onSubmitted: (value) => searchVideos(),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _items.length,
-              itemBuilder: (context, index) {
-                var item = _items[index];
-                String videoId = item['id']['videoId'];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              VideoPlayerScreen(videoId: videoId)),
-                    );
-                  },
-                  child: Card(
-                    color: Colors.blue, // 카드의 색상을 설정합니다.
-                    child: SizedBox(
-                      width: 200.0,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              width: 200.0,
-                              height: 200.0,
-                              child: Image.network(
-                                  item['snippet']['thumbnails']['high']['url']),
+          Column(
+            children: <Widget>[
+              SizedBox(
+                height: 230.0, // 카드 리스트의 높이를 제한합니다.
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _items.length,
+                  itemBuilder: (context, index) {
+                    var item = _items[index];
+                    String videoId = item['id']['videoId'];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  VideoPlayerScreen(videoId: videoId)),
+                        );
+                      },
+                      child: Card(
+                        child: Ink(
+                          child: SizedBox(
+                            width: 250.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Column(
+                                children: <Widget>[
+                                  SizedBox(
+                                    width: 250.0,
+                                    height: 180.0,
+                                    child: Image.network(item['snippet']
+                                        ['thumbnails']['high']['url']),
+                                  ),
+                                  const SizedBox(height: 5.0),
+                                  Text(
+                                    item['snippet']['title'],
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              item['snippet']['title'],
-                              overflow: TextOverflow.ellipsis, // 긴 텍스트를 처리합니다.
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 50.0), // 리스트 하단에 공간을 추가합니다.
+            ],
+          )
         ],
       ),
     );
